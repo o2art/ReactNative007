@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Accelerometer } from "expo-sensors";
 
-const ws = new WebSocket("http://192.168.0.164:1337");
+const ws = new WebSocket("http://172.20.10.11:1337");
 ws.onopen = () => {
   ws.send("klient expo się podłączył");
 };
@@ -34,7 +34,7 @@ export default class AccelerometerSensor extends Component {
       this.state.connected = !this.state.connected;
       if (this.state.connected) {
         this.interval = setInterval(() => {
-          ws.send(JSON.stringify(this.state.accelerometerData, null, 4));
+          ws.send(JSON.stringify(this.state.accelerometerData));
         }, 20);
       } else {
         clearInterval(this.interval);

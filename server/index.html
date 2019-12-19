@@ -15,9 +15,10 @@
 
   <body>
     <canvas id="c" width="1000" height="500"></canvas>
+    <p id="pepe">rzurzel</p>
     <script>
       window.onload = () => {
-        const ws = new WebSocket("ws://192.168.0.164:1337");
+        const ws = new WebSocket("ws://localhost:1337");
 
         ws.onopen = () => {
           ws.send("klient browser się podłączył");
@@ -27,10 +28,6 @@
           if (e.data[0] != "s") {
             obj = JSON.parse(e.data);
             console.log(obj);
-            document.getElementById("nana").style.top = obj.y * 100 + "px";
-            document.getElementById("nana").style.left = obj.x * 100 + "px";
-            document.getElementById("nana").style.transform =
-              "scale(" + obj.z + ", " + obj.z + ")";
           }
         };
 
@@ -83,7 +80,7 @@
             outerPath.arc(250, 250, 250, (5 / 2) * Math.PI, (3 / 2) * Math.PI);
             outerPath.closePath();
             ctx.fillStyle = pat;
-            ctx.strokeStyle = "black";
+            ctx.strokeStyle = "orange";
             ctx.stroke(outerPath);
             ctx.fill(outerPath);
             ctx.closePath();
@@ -108,46 +105,50 @@
         player = () => {
           let x = 250;
           let y = 450;
-          let angle = 0;
+          let angle = 90;
           let flag = false;
           let line = document.getElementById("c").getContext("2d");
 
           makePlayer = ctx => {
-            ctx.beginPath();
-            document.addEventListener("keypress", () => start(ctx));
-          };
-
-          start = (ctx, e) => {
-            alert("press space to start");
-            if (e.which == 32) {
-              document.removeEventListener("keypress");
-              movePlayer(ctx);
+            if (obj.z < -1) {
+              clearInterval(nana);
+              document.getElementById("pepe").innerHTML = "przygotuj się!";
+              setTimeout(() => {
+                ctx.beginPath();
+                movePlayer(ctx);
+              }, 500);
             }
           };
 
           movePlayer = ctx => {
+            document.getElementById("pepe").innerHTML = "do boju!";
             move = setInterval(() => {
               if (typeof obj !== "undefined") {
-                obj.y > 0 ? (y -= Math.sin(obj.y)) : (y += Math.sin(obj.y));
-                obj.x < 0 ? (x -= Math.cos(obj.x)) : (x += Math.cos(obj.x));
-              } else {
-                alert("obj is undefined");
+                angle -= obj.y / 100;
+                x += Math.sin(angle);
+                y += Math.cos(angle);
               }
               if (ctx.isPointInPath(innerPath, x, y)) {
                 clearInterval(move);
-                alert("game over");
-                location = location;
+                document.getElementById("pepe").innerHTML = "koniec";
+                setTimeout(() => (location = location), 5000);
               } else if (ctx.isPointInPath(outerPath, x, y) == false) {
                 clearInterval(move);
-                alert("game over");
-                location = location;
+                document.getElementById("pepe").innerHTML = "koniec";
+                setTimeout(() => (location = location), 5000);
               }
               ctx.lineTo(x, y);
               ctx.stroke();
-            }, 7);
+            }, 5);
           };
 
-          makePlayer(line);
+          setTimeout(() => {
+            document.getElementById("pepe").innerHTML =
+              "porusz telefonem do dołu";
+            nana = setInterval(() => {
+              makePlayer(line);
+            }, 200);
+          });
         };
 
         board(), player();
