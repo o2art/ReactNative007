@@ -124,7 +124,7 @@
             document.getElementById("pepe").innerHTML = "do boju!";
             move = setInterval(() => {
               if (typeof obj !== "undefined") {
-                angle -= obj.y / 100;
+                angle += obj.y / 100;
                 x += Math.sin(angle);
                 y += Math.cos(angle);
               }
